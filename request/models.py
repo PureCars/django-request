@@ -121,3 +121,11 @@ class Request(models.Model):
             self.user = None
 
         super(Request, self).save(*args, **kwargs)
+
+
+@python_2_unicode_compatible
+class RequestBenchmark(models.Model):
+    uuid = models.UUIDField(db_index=True)
+    time = models.DateTimeField(_('time'), default=timezone.now, db_index=True)
+    description = models.CharField(max_length=255)
+    request = models.ForeignKey(Request, null=True)

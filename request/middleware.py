@@ -2,6 +2,7 @@
 from . import settings
 from .models import Request
 from .router import Patterns
+from .tasks import update_benchmarks
 
 try:
     # needed to support Django >= 1.10 MIDDLEWARE
@@ -39,5 +40,10 @@ class RequestMiddleware(MiddlewareMixin):
 
         r = Request()
         r.from_http_request(request, response)
+
+        # Only create a benchmark if there is an id
+        uuid = getattr(request, 'id', None)
+        if uuid:
+            update_benchmarks.apply_async(args=[r.pk, uuid])
 
         return response
