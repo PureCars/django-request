@@ -85,6 +85,12 @@ class Request(models.Model):
             self.save()
 
     @property
+    def total_execution_time(self):
+        if not self.requestbenchmark_set:
+            return None
+        return (self.requestbenchmark_set.latest('time').time - self.requestbenchmark_set.earliest('time').time).seconds
+
+    @property
     def browser(self):
         if not self.user_agent:
             return
